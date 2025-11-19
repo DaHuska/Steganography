@@ -36,4 +36,5 @@ public class Pixel {
     public void setColor(Color color) {
         this.color = color;
     }
+
 }
