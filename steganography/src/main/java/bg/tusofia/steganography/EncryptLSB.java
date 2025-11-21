@@ -32,8 +32,8 @@ public class EncryptLSB {
 
         Pixel[] pixels = new Pixel[pixelsCount];
         int index = 0;
-        for (int y = 0; y < width; y++) {
-            for (int x = 0; x < height; x++) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
                 pixels[index] = new Pixel(x, y, new Color(imageToEncrypt.getRGB(x, y), true));
 
                 index++;
