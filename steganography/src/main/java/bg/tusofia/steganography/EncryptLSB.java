@@ -7,7 +7,7 @@ import java.awt.image.WritableRaster;
 
 public class EncryptLSB {
     // TODO: rename variable
-    private BufferedImage bufferedImageCopy;
+    private BufferedImage inputImage;
 
     // TODO: is constructor going to be empty
     public EncryptLSB() {}
@@ -56,7 +56,7 @@ public class EncryptLSB {
         return binaryValues;
     }
 
-    public BufferedImage getBufferedImageCopy() {
-        return bufferedImageCopy;
+    public BufferedImage getInputImage() {
+        return inputImage;
     }
 }
