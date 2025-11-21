@@ -42,4 +42,21 @@ public class EncryptLSB {
 
         return pixels;
     }
+
+    private String[] convertMessageToBinary(String message) {
+        String[] binaryValues = new String[message.length()];
+
+        for (int i = 0; i < message.length(); i++) {
+            byte asciiValue = (byte) message.charAt(i);
+
+            binaryValues[i] = String
+                    .format("%8s", Integer.toBinaryString(asciiValue & 0xFF)).replace(' ', '0');
+        }
+
+        return binaryValues;
+    }
+
+    public BufferedImage getBufferedImageCopy() {
+        return bufferedImageCopy;
+    }
 }
