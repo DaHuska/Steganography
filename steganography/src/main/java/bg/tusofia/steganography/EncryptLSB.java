@@ -57,6 +57,14 @@ public class EncryptLSB {
         return colorsBinary;
     }
 
+    private BufferedImage getImageCopy(BufferedImage image) {
+        ColorModel colorModel = image.getColorModel();
+        boolean isAlphaPremultiplied = colorModel.isAlphaPremultiplied();
+        WritableRaster writableRaster = image.copyData(image.getRaster().createCompatibleWritableRaster());
+
+        return new BufferedImage(colorModel, writableRaster, isAlphaPremultiplied, null);
+    }
+
     private Pixel[] getPixels(BufferedImage imageToEncrypt) {
         int width = imageToEncrypt.getWidth();
         int height = imageToEncrypt.getHeight();
