@@ -25,6 +25,38 @@ public class EncryptLSB {
         return new BufferedImage(colorModel, writableRaster, isAlphaPremultiplied, null);
     }
 
+
+
+    private String[] convertMessageToBinary(String message) {
+        String[] binaryValues = new String[message.length()];
+
+        for (int i = 0; i < message.length(); i++) {
+            byte asciiValue = (byte) message.charAt(i);
+
+            binaryValues[i] = String
+                    .format("%8s", Integer.toBinaryString(asciiValue & 0xFF)).replace(' ', '0');
+        }
+
+        return binaryValues;
+    }
+
+    private Map<String, String> convertPixelColorsToBinary(Pixel pixel) {
+        Map<String, String> colorsBinary = new HashMap<>();
+
+        byte red = (byte) pixel.getColor().getRed();
+        byte green = (byte) pixel.getColor().getGreen();
+        byte blue = (byte) pixel.getColor().getBlue();
+
+        colorsBinary.putIfAbsent("red",
+                String.format("%8s", Integer.toBinaryString(red & 0xFF)).replace(' ', '0'));
+        colorsBinary.putIfAbsent("green",
+                String.format("%8s", Integer.toBinaryString(green & 0xFF)).replace(' ', '0'));
+        colorsBinary.putIfAbsent("blue",
+                String.format("%8s", Integer.toBinaryString(blue & 0xFF)).replace(' ', '0'));
+
+        return colorsBinary;
+    }
+
     private Pixel[] getPixels(BufferedImage imageToEncrypt) {
         int width = imageToEncrypt.getWidth();
         int height = imageToEncrypt.getHeight();
@@ -41,19 +73,6 @@ public class EncryptLSB {
         }
 
         return pixels;
-    }
-
-    private String[] convertMessageToBinary(String message) {
-        String[] binaryValues = new String[message.length()];
-
-        for (int i = 0; i < message.length(); i++) {
-            byte asciiValue = (byte) message.charAt(i);
-
-            binaryValues[i] = String
-                    .format("%8s", Integer.toBinaryString(asciiValue & 0xFF)).replace(' ', '0');
-        }
-
-        return binaryValues;
     }
 
     public BufferedImage getInputImage() {
