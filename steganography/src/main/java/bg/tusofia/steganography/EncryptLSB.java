@@ -22,19 +22,15 @@ public class EncryptLSB {
         String messageBinaryText = convertMessageBinaryArrtoString(messageBinary);
 
         int index = 0;
-        for (int i = 0; i < imagePixels.length; i++) {
-            // Use same pixel object
+        for (Pixel currPixel : imagePixels) {
             // Check if message reaches end
-            Pixel currPixel = imagePixels[i];
             if (index + 3 <= messageBinaryText.length()) {
                 encodeIntoPixel(currPixel, messageBinaryText.substring(index, index + 3));
 
-                index+=3;
+                index += 3;
             } else {
                 encodeIntoPixel(currPixel, messageBinaryText.substring(index, messageBinaryText.length() - 1));
             }
-
-            imagePixels[i] = currPixel;
         }
     }
 
