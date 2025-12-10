@@ -20,7 +20,6 @@ public class EncryptLSB {
         Pixel[] imagePixels = getPixels(imageCopy);
         String[] messageBinary = convertMessageToBinary(message);
         String messageBinaryText = convertMessageBinaryArrtoString(messageBinary);
-        int lbsDepth = calculateDepth(imagePixels, messageBinaryText);
 
         int index = 0;
         for (Pixel currPixel : imagePixels) {
@@ -98,24 +97,6 @@ public class EncryptLSB {
                 String.format("%8s", Integer.toBinaryString(blue & 0xFF)).replace(' ', '0'));
 
         return colorsBinary;
-    }
-
-    private int calculateDepth(Pixel[] pixels, String messageBinary) {
-        int pixelsLSBColCount = pixels.length * 3;
-
-        if (messageBinary.length() < pixelsLSBColCount) {
-            return 1;
-        }
-
-        // TODO: Refactor this
-        int depth = messageBinary.length() / pixelsLSBColCount;
-        int remainder = messageBinary.length() % pixelsLSBColCount;
-
-        if (remainder != 0) {
-            return depth + 1;
-        }
-
-        return depth;
     }
 
     private BufferedImage getImageCopy(BufferedImage image) {
