@@ -3,6 +3,7 @@ package bg.tusofia.steganography;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
+import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +15,7 @@ public class EncryptLSB {
     // TODO: is constructor going to be empty
     public EncryptLSB() {}
 
-    public void encryptMessageInImage(BufferedImage image, String message) {
+    public BufferedImage encryptMessageInImage(BufferedImage image, String message) {
         // TODO: Validate message length and image pixels
         BufferedImage imageCopy = getImageCopy(image);
         Pixel[] imagePixels = getPixels(imageCopy);
@@ -32,23 +33,24 @@ public class EncryptLSB {
                 encodeIntoPixel(currPixel, messageBinaryText.substring(index, messageBinaryText.length() - 1));
             }
         }
+
+        return createNewImage(imagePixels);
     }
 
     private void encodeIntoPixel(Pixel pixel, String bits) {
         Map<String, String> colorsBinary = convertPixelColorsToBinary(pixel);
+        int size = bits.length();
 
-        // TODO: continue with next LSBs if current LSBs run out
-        if (bits.length() == 1) {
+        if (size == 1) {
             colorsBinary.put("red", colorsBinary.get("red").substring(0, 7) + bits.charAt(0));
-        } else if (bits.length() == 2) {
+        } else if (size == 2) {
             colorsBinary.put("red", colorsBinary.get("red").substring(0, 7) + bits.charAt(0));
             colorsBinary.put("green", colorsBinary.get("green").substring(0, 7) + bits.charAt(1));
-        } else if (bits.length() == 3) {
+        } else if (size == 3) {
             colorsBinary.put("red", colorsBinary.get("red").substring(0, 7) + bits.charAt(0));
             colorsBinary.put("green", colorsBinary.get("green").substring(0, 7) + bits.charAt(1));
             colorsBinary.put("blue", colorsBinary.get("blue").substring(0, 7) + bits.charAt(2));
         }
-
 
         Color newColor = new Color(
                 Integer.parseInt(colorsBinary.get("red"), 2),
@@ -123,6 +125,16 @@ public class EncryptLSB {
         }
 
         return pixels;
+    }
+
+    private BufferedImage createNewImage(Pixel[] pixels) {
+        BufferedImage image = new BufferedImage(16, 16, BufferedImage.TYPE_INT_RGB);
+
+        for (Pixel pixel : pixels) {
+            image.setRGB(pixel.getX(), pixel.getY(), pixel.getColor().getRGB());
+        }
+
+        return image;
     }
 
     public BufferedImage getInputImage() {
