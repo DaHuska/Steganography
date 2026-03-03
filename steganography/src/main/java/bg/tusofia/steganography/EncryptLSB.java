@@ -3,16 +3,11 @@ package bg.tusofia.steganography;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
-import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.util.HashMap;
 import java.util.Map;
 
 public class EncryptLSB {
-    // TODO: rename variable
-    private BufferedImage inputImage;
-
-    // TODO: is constructor going to be empty
     public EncryptLSB() {}
 
     public static BufferedImage encryptMessageInImage(BufferedImage image, String message) throws InterruptedException {
@@ -149,9 +144,5 @@ public class EncryptLSB {
         if (image.getHeight() < 600 || image.getWidth() < 600) {
             throw new IllegalArgumentException("Image size should be at least 600x600");
         }
-    }
-
-    public BufferedImage getInputImage() {
-        return inputImage;
     }
 }
