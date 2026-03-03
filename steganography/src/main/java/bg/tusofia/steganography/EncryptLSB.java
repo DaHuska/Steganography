@@ -15,7 +15,7 @@ public class EncryptLSB {
     // TODO: is constructor going to be empty
     public EncryptLSB() {}
 
-    public BufferedImage encryptMessageInImage(BufferedImage image, String message) throws InterruptedException {
+    public static BufferedImage encryptMessageInImage(BufferedImage image, String message) throws InterruptedException {
         BufferedImage imageCopy = getImageCopy(image);
 
         validateImageSize(imageCopy);
@@ -43,7 +43,7 @@ public class EncryptLSB {
         return createNewImage(imagePixels, image.getWidth(), image.getHeight());
     }
 
-    private void encodeIntoPixel(Pixel pixel, String bits) {
+    private static void encodeIntoPixel(Pixel pixel, String bits) {
         Map<String, String> colorsBinary = convertPixelColorsToBinary(pixel);
         int size = bits.length();
 
@@ -67,7 +67,7 @@ public class EncryptLSB {
         pixel.setColor(newColor);
     }
 
-    private String[] convertMessageToBinary(String message) {
+    private static String[] convertMessageToBinary(String message) {
         String[] binaryValues = new String[message.length()];
 
         for (int i = 0; i < message.length(); i++) {
@@ -80,7 +80,7 @@ public class EncryptLSB {
         return binaryValues;
     }
 
-    private String convertMessageBinaryArrtoString(String[] messageBinary) {
+    private static String convertMessageBinaryArrtoString(String[] messageBinary) {
         StringBuilder message = new StringBuilder();
 
         for (String binary : messageBinary) {
@@ -90,7 +90,7 @@ public class EncryptLSB {
         return message.toString();
     }
 
-    private Map<String, String> convertPixelColorsToBinary(Pixel pixel) {
+    private static Map<String, String> convertPixelColorsToBinary(Pixel pixel) {
         Map<String, String> colorsBinary = new HashMap<>();
 
         byte red = (byte) pixel.getColor().getRed();
@@ -107,7 +107,7 @@ public class EncryptLSB {
         return colorsBinary;
     }
 
-    private BufferedImage getImageCopy(BufferedImage image) {
+    private static BufferedImage getImageCopy(BufferedImage image) {
         ColorModel colorModel = image.getColorModel();
         boolean isAlphaPremultiplied = colorModel.isAlphaPremultiplied();
         WritableRaster writableRaster = image.copyData(image.getRaster().createCompatibleWritableRaster());
@@ -115,7 +115,7 @@ public class EncryptLSB {
         return new BufferedImage(colorModel, writableRaster, isAlphaPremultiplied, null);
     }
 
-    private Pixel[] getPixels(BufferedImage imageToEncrypt) {
+    private static Pixel[] getPixels(BufferedImage imageToEncrypt) {
         int width = imageToEncrypt.getWidth();
         int height = imageToEncrypt.getHeight();
         int pixelsCount = width * height;
@@ -133,7 +133,7 @@ public class EncryptLSB {
         return pixels;
     }
 
-    private BufferedImage createNewImage(Pixel[] pixels, int width, int height) {
+    private static BufferedImage createNewImage(Pixel[] pixels, int width, int height) {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
         for (Pixel pixel : pixels) {
@@ -143,7 +143,7 @@ public class EncryptLSB {
         return image;
     }
 
-    private void validateImageSize(BufferedImage image) {
+    private static void validateImageSize(BufferedImage image) {
         // Height should be more than 600 pixels
         // Width should be more than 600 pixels
         if (image.getHeight() < 600 || image.getWidth() < 600) {
