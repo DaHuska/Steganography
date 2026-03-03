@@ -15,9 +15,11 @@ public class EncryptLSB {
     // TODO: is constructor going to be empty
     public EncryptLSB() {}
 
-    public BufferedImage encryptMessageInImage(BufferedImage image, String message) {
-        // TODO: Validate message length and image pixels
+    public BufferedImage encryptMessageInImage(BufferedImage image, String message) throws InterruptedException {
         BufferedImage imageCopy = getImageCopy(image);
+
+        validateImageSize(imageCopy);
+
         Pixel[] imagePixels = getPixels(imageCopy);
         String[] messageBinary = convertMessageToBinary(message);
         String messageBinaryText = convertMessageBinaryArrtoString(messageBinary);
@@ -29,12 +31,16 @@ public class EncryptLSB {
                 encodeIntoPixel(currPixel, messageBinaryText.substring(index, index + 3));
 
                 index += 3;
-            } else {
+            } else if (index < messageBinary.length) {
                 encodeIntoPixel(currPixel, messageBinaryText.substring(index, messageBinaryText.length() - 1));
+
+                break;
+            } else {
+                break;
             }
         }
 
-        return createNewImage(imagePixels);
+        return createNewImage(imagePixels, image.getWidth(), image.getHeight());
     }
 
     private void encodeIntoPixel(Pixel pixel, String bits) {
@@ -127,14 +133,22 @@ public class EncryptLSB {
         return pixels;
     }
 
-    private BufferedImage createNewImage(Pixel[] pixels) {
-        BufferedImage image = new BufferedImage(16, 16, BufferedImage.TYPE_INT_RGB);
+    private BufferedImage createNewImage(Pixel[] pixels, int width, int height) {
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
         for (Pixel pixel : pixels) {
             image.setRGB(pixel.getX(), pixel.getY(), pixel.getColor().getRGB());
         }
 
         return image;
+    }
+
+    private void validateImageSize(BufferedImage image) {
+        // Height should be more than 600 pixels
+        // Width should be more than 600 pixels
+        if (image.getHeight() < 600 || image.getWidth() < 600) {
+            throw new IllegalArgumentException("Image size should be at least 600x600");
+        }
     }
 
     public BufferedImage getInputImage() {
