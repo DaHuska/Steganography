@@ -13,17 +13,14 @@ import java.security.spec.KeySpec;
 import java.util.Base64;
 
 public class AESImpl {
-    private final String ALGORITHM = "AES/GCM/NoPadding";
+    private static final String ALGORITHM = "AES/GCM/NoPadding";
 
     // Default constructor
     public AESImpl() {}
 
-    public String encryptMessage(String message) throws NoSuchAlgorithmException, InvalidKeySpecException,
+    public static String encryptMessage(String message, String password) throws NoSuchAlgorithmException, InvalidKeySpecException,
             InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException,
             BadPaddingException, InvalidKeyException {
-        // TODO: password randomgen or not
-        String password = "123asdadf123";
-
         SecretKey secretKeySender = getKeyFromPassword(password, "asd123sdggd");
         GCMParameterSpec initializationVector = generateIv();
 
@@ -32,7 +29,7 @@ public class AESImpl {
         return cipherText;
     }
 
-    private String encrypt(String algorithm, String input, SecretKey key,
+    private static String encrypt(String algorithm, String input, SecretKey key,
                                  GCMParameterSpec iv) throws NoSuchPaddingException, NoSuchAlgorithmException,
             InvalidAlgorithmParameterException, InvalidKeyException,
             BadPaddingException, IllegalBlockSizeException {
@@ -46,7 +43,7 @@ public class AESImpl {
                 .encodeToString(cipherText);
     }
 
-    private String decrypt(String algorithm, String cipherText, SecretKey key,
+    private static String decrypt(String algorithm, String cipherText, SecretKey key,
                                  GCMParameterSpec iv) throws NoSuchPaddingException, NoSuchAlgorithmException,
             InvalidAlgorithmParameterException, InvalidKeyException,
             BadPaddingException, IllegalBlockSizeException {
@@ -60,14 +57,14 @@ public class AESImpl {
         return new String(plainText);
     }
 
-    private GCMParameterSpec generateIv() {
+    private static GCMParameterSpec generateIv() {
         byte[] initializationVector = new byte[12];
         new SecureRandom().nextBytes(initializationVector);
 
         return new GCMParameterSpec(128, initializationVector);
     }
 
-    private SecretKey getKeyFromPassword(String password, String salt)
+    private static SecretKey getKeyFromPassword(String password, String salt)
             throws NoSuchAlgorithmException, InvalidKeySpecException {
 
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
