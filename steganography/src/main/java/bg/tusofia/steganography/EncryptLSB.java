@@ -1,22 +1,35 @@
 package bg.tusofia.steganography;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class EncryptLSB {
     public EncryptLSB() {}
 
-    public static BufferedImage encryptMessageInImage(BufferedImage image, String message) throws InterruptedException {
+    public static BufferedImage encryptMessageInImage(BufferedImage image, String message, String password)
+            throws InterruptedException, InvalidAlgorithmParameterException, NoSuchPaddingException,
+            IllegalBlockSizeException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException,
+            InvalidKeyException {
         BufferedImage imageCopy = getImageCopy(image);
 
         validateImageSize(imageCopy);
 
+        // Encrypt message
+        String cipherMsg = AESImpl.encryptMessage(message, password);
+
         Pixel[] imagePixels = getPixels(imageCopy);
-        String[] messageBinary = convertMessageToBinary(message);
+        String[] messageBinary = convertMessageToBinary(cipherMsg);
         String messageBinaryText = convertMessageBinaryArrtoString(messageBinary);
 
         int index = 0;
