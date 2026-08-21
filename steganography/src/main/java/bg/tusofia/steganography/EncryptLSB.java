@@ -18,7 +18,7 @@ public class EncryptLSB {
     public EncryptLSB() {}
 
     public static BufferedImage encryptMessageInImage(BufferedImage image, String message, String password)
-            throws InterruptedException, InvalidAlgorithmParameterException, NoSuchPaddingException,
+            throws InvalidAlgorithmParameterException, NoSuchPaddingException,
             IllegalBlockSizeException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException,
             InvalidKeyException {
         BufferedImage imageCopy = getImageCopy(image);
@@ -49,6 +49,27 @@ public class EncryptLSB {
         }
 
         return createNewImage(imagePixels, image.getWidth(), image.getHeight());
+    }
+
+    public static void extractMsgBitsFromImg(BufferedImage image) {
+        // TODO: How to transfer message length
+        int length = 56;
+
+        Pixel[] pixels = getPixels(image);
+
+        StringBuilder messageBits = new StringBuilder();
+        // TODO: check for iteration counts
+        for (int i = 0; i < 96 * 8 / 3; i++) {
+            Pixel currPixel = pixels[i];
+
+            Map<String, String> colorsBinary = convertPixelColorsToBinary(currPixel);
+            messageBits.append(colorsBinary.get("red").charAt(7));
+            messageBits.append(colorsBinary.get("green").charAt(7));
+            messageBits.append(colorsBinary.get("blue").charAt(7));
+        }
+
+        String message = messageBits.toString();
+        System.out.println(message);
     }
 
     private static void encodeIntoPixel(Pixel pixel, String bits) {
