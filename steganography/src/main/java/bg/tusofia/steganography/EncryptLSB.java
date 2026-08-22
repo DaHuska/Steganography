@@ -70,6 +70,21 @@ public class EncryptLSB {
 
         String message = messageBits.toString();
         System.out.println(message);
+        String cipherText = convertBitsToString(message);
+        System.out.println(cipherText);
+    }
+
+    private static String convertBitsToString(String bits) {
+        StringBuilder cipherText = new StringBuilder();
+
+        // TODO: find a way to extract message length
+        for (int i = 0; i < bits.length() - 8; i+=8) {
+            String currBits = bits.substring(i, i + 8);
+            byte b = (byte) Integer.parseInt(currBits, 2);
+            cipherText.append((char)b);
+        }
+
+        return cipherText.toString();
     }
 
     private static void encodeIntoPixel(Pixel pixel, String bits) {
