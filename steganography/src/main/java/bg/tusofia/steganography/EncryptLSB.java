@@ -35,23 +35,21 @@ public class EncryptLSB {
         Pixel[] startingPixels = new Pixel[11];
 
         int index = 0;
-        for (Pixel currPixel : imagePixels) {
-            // If first pixel, encode cipher text length
-            if (index < 11) {
-                startingPixels[index] = currPixel;
-                index++;
+        int bitsIndex = 0;
+        for (int i = 0; i < imagePixels.length; i++) {
+            if (i < 11) {
+                startingPixels[i] = imagePixels[i];
 
                 continue;
             }
             encodeCipherLength(startingPixels, cipherLength);
 
-            // Check if message reaches end
-            if (index + 3 <= messageBinaryText.length()) {
-                encodeIntoPixel(currPixel, messageBinaryText.substring(index, index + 3));
+            if (bitsIndex + 3 <= messageBinaryText.length()) {
+                encodeIntoPixel(imagePixels[i], messageBinaryText.substring(bitsIndex, bitsIndex + 3));
 
-                index += 3;
-            } else if (index < messageBinary.length) {
-                encodeIntoPixel(currPixel, messageBinaryText.substring(index, messageBinaryText.length() - 1));
+                bitsIndex += 3;
+            } else if (bitsIndex < messageBinaryText.length()) {
+                encodeIntoPixel(imagePixels[i], messageBinaryText.substring(bitsIndex));
 
                 break;
             } else {
@@ -92,14 +90,11 @@ public class EncryptLSB {
     }
 
     public static void extractMsgBitsFromImg(BufferedImage image) {
-        // TODO: How to transfer message length
-        int length = 48;
-
         Pixel[] pixels = getPixels(image);
+        int length = extractCipherLength(pixels);
 
         StringBuilder messageBits = new StringBuilder();
-        // TODO: check for iteration counts
-        for (int i = 0; i < length * 8 / 3; i++) {
+        for (int i = 11; i < ((length) * 8 / 3) + 12; i++) {
             Pixel currPixel = pixels[i];
 
             Map<String, String> colorsBinary = convertPixelColorsToBinary(currPixel);
@@ -109,6 +104,7 @@ public class EncryptLSB {
         }
 
         String message = messageBits.toString();
+        System.out.println(message.length());
         System.out.println(message);
         String cipherText = convertBitsToString(message);
         System.out.println(cipherText);
@@ -118,11 +114,12 @@ public class EncryptLSB {
         StringBuilder cipherText = new StringBuilder();
         int size = bits.length();
 
-        // TODO: find a way to extract message length
-        for (int i = 0; i < size; i+=8) {
+        for (int i = 0; i <= size - 8 - (size % 8); i+=8) {
             String currBits = bits.substring(i, i + 8);
+
             byte b = (byte) Integer.parseInt(currBits, 2);
             cipherText.append((char)b);
+
         }
 
         return cipherText.toString();
@@ -150,6 +147,27 @@ public class EncryptLSB {
         );
 
         pixel.setColor(newColor);
+    }
+
+    static int extractCipherLength(Pixel[] pixels) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 11; i++) {
+            Pixel currPixel = pixels[i];
+
+            Map<String, String> colorsBinary = convertPixelColorsToBinary(currPixel);
+            sb.append(colorsBinary.get("red").charAt(7));
+            sb.append(colorsBinary.get("green").charAt(7));
+            sb.append(colorsBinary.get("blue").charAt(7));
+        }
+
+        String bits = sb.toString();
+        int length = 0;
+
+        for (int i = 0; i < 32; i+=8) {
+            length += Integer.parseInt(bits.substring(i, i + 8), 2);
+        }
+
+        return length;
     }
 
     private static String[] convertMessageToBinary(String message) {
