@@ -60,6 +60,13 @@ public class EncryptLSB {
         return createNewImage(imagePixels, image.getWidth(), image.getHeight());
     }
 
+    public static void extractMsgFromImage(BufferedImage image, String password) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
+        String cipherText = convertBitsToString(extractMsgBitsFromImg(image));
+        String message = AESImpl.decryptMessage(password, cipherText);
+
+        System.out.println(message);
+    }
+
     private static void encodeCipherLength(Pixel[] pixels, int cipherLength) {
         int a = cipherLength / 255;
         int b = cipherLength % 255;
@@ -89,7 +96,7 @@ public class EncryptLSB {
         }
     }
 
-    public static void extractMsgBitsFromImg(BufferedImage image) {
+    public static String extractMsgBitsFromImg(BufferedImage image) {
         Pixel[] pixels = getPixels(image);
         int length = extractCipherLength(pixels);
 
@@ -103,11 +110,7 @@ public class EncryptLSB {
             messageBits.append(colorsBinary.get("blue").charAt(7));
         }
 
-        String message = messageBits.toString();
-        System.out.println(message.length());
-        System.out.println(message);
-        String cipherText = convertBitsToString(message);
-        System.out.println(cipherText);
+        return messageBits.toString();
     }
 
     private static String convertBitsToString(String bits) {

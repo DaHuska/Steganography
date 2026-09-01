@@ -46,6 +46,7 @@ public class SteganographyApplication {
 		File file2 = new File(IMG_OUT_PATH);
 		BufferedImage inputImage2 = ImageIO.read(file2);
 
+		EncryptLSB.extractMsgFromImage(inputImage2, PASSWORD);
 		EncryptLSB.extractMsgBitsFromImg(inputImage2);
 	}
 }

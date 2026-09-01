@@ -14,6 +14,9 @@ import java.util.Base64;
 
 public class AESImpl {
     private static final String ALGORITHM = "AES/GCM/NoPadding";
+    private static final String SALT = "asd123sdggd";
+    private static final GCMParameterSpec initializationVector = generateIv();
+
 
     // Default constructor
     public AESImpl() {}
@@ -21,12 +24,17 @@ public class AESImpl {
     public static String encryptMessage(String message, String password) throws NoSuchAlgorithmException, InvalidKeySpecException,
             InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException,
             BadPaddingException, InvalidKeyException {
-        SecretKey secretKeySender = getKeyFromPassword(password, "asd123sdggd");
-        GCMParameterSpec initializationVector = generateIv();
-
+        SecretKey secretKeySender = getKeyFromPassword(password, SALT);
         String cipherText = encrypt(ALGORITHM, message, secretKeySender, initializationVector);
 
         return cipherText;
+    }
+
+    public static String decryptMessage(String password, String cipher) throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
+        SecretKey secretKeyReceiver = getKeyFromPassword(password, SALT);
+        String message = decrypt(ALGORITHM, cipher, secretKeyReceiver, initializationVector);
+
+        return message;
     }
 
     private static String encrypt(String algorithm, String input, SecretKey key,
