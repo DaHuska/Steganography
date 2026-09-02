@@ -60,11 +60,11 @@ public class EncryptLSB {
         return createNewImage(imagePixels, image.getWidth(), image.getHeight());
     }
 
-    public static void extractMsgFromImage(BufferedImage image, String password) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
+    public static String extractMsgFromImage(BufferedImage image, String password) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
         String cipherText = convertBitsToString(extractMsgBitsFromImg(image));
         String message = AESImpl.decryptMessage(password, cipherText);
 
-        System.out.println(message);
+        return message;
     }
 
     private static void encodeCipherLength(Pixel[] pixels, int cipherLength) {
@@ -72,15 +72,9 @@ public class EncryptLSB {
         int b = cipherLength % 255;
 
         StringBuilder bd = new StringBuilder();
-        for (int i = 0; i < a; i++) {
-            bd.append("11111111");
-        }
-
+        bd.append("11111111".repeat(Math.max(0, a)));
         bd.append(String.format("%8s", Integer.toBinaryString((byte) b & 0xFF)).replace(' ', '0'));
-
-        for (int i = 0; i < 4 - a - 1; i++) {
-            bd.append("00000000");
-        }
+        bd.append("00000000".repeat(Math.max(0, 4 - a - 1)));
 
         String bits = bd.toString();
         int index = 0;
