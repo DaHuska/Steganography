@@ -243,11 +243,13 @@ public class EncryptLSB {
         return image;
     }
 
-    private static void validateImageSize(BufferedImage image) {
+    public static boolean validateMsgLength(String message) {
+        return message.length() <= 1024;
+    }
+
+    public static boolean validateImageSize(BufferedImage image) {
         // Height should be more than 600 pixels
         // Width should be more than 600 pixels
-        if (image.getHeight() < 600 || image.getWidth() < 600) {
-            throw new IllegalArgumentException("Image size should be at least 600x600");
-        }
+        return image.getHeight() * image.getWidth() >= 3000;
     }
 }

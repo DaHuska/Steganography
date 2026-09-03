@@ -65,29 +65,47 @@ public class SteganographyApplication {
 		while (!done) {
 			try {
 				if (operation.equals("1")) {
-					// ---------- HIDE MESSAGE ----------
-					System.out.println("Image path (or 'exit' to quit): ");
-					String imgPath = scan.nextLine();
+					BufferedImage inputImage = null;
 
-					if ("exit".equalsIgnoreCase(imgPath)) {
-						System.out.println("Exiting...");
-						break;
+					while (inputImage == null) {
+						System.out.println("Image path (or 'exit' to quit): ");
+						String imgPath = scan.nextLine();
+
+						if ("exit".equalsIgnoreCase(imgPath)) {
+							System.out.println("Exiting...");
+							scan.close();
+							return;
+						}
+
+						File file = new File(imgPath);
+						if (!file.exists() || !file.isFile() || !file.canRead()) {
+							System.out.println("Invalid file path or file not readable. Please try again.");
+							continue;
+						}
+
+						inputImage = ImageIO.read(file);
+						if (inputImage == null) {
+							System.out.println("Could not read image (unsupported format or corrupted file). Please try again.");
+							continue;
+						}
+
+						if (!EncryptLSB.validateImageSize(inputImage)) {
+							System.out.println("Image size is not suitable for steganography. Please choose another image.");
+							inputImage = null;
+						}
 					}
 
-					File file = new File(imgPath);
-					if (!file.exists() || !file.isFile() || !file.canRead()) {
-						System.out.println("Invalid file path or file not readable. Please try again.");
-						continue;
-					}
+					String message = null;
+					while (message == null) {
+						System.out.println("Type in the message: ");
+						String msgInput = scan.nextLine();
 
-					BufferedImage inputImage = ImageIO.read(file);
-					if (inputImage == null) {
-						System.out.println("Could not read image (unsupported format or corrupted file). Please try again.");
-						continue;
+						if (!EncryptLSB.validateMsgLength(msgInput)) {
+							System.out.println("Message is too long for this image. Please enter a shorter message.");
+						} else {
+							message = msgInput;
+						}
 					}
-
-					System.out.println("Type in the message: ");
-					String message = scan.nextLine();
 
 					System.out.println("Type in password: ");
 					String password = scan.nextLine();
