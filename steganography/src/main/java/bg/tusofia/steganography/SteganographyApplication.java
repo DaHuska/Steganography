@@ -2,7 +2,6 @@ package bg.tusofia.steganography;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.core.env.Environment;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -11,7 +10,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URLConnection;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -89,7 +87,7 @@ public class SteganographyApplication {
 							continue;
 						}
 
-						if (!EncryptLSB.validateImageSize(inputImage)) {
+						if (!EncryptLSB.validateImgSize(inputImage)) {
 							System.out.println("Image size is not suitable for steganography. Please choose another image.");
 							inputImage = null;
 						}
@@ -113,7 +111,7 @@ public class SteganographyApplication {
 					System.out.println("Output image path (e.g. output.png): ");
 					String outPath = scan.nextLine();
 
-					BufferedImage outputImage = EncryptLSB.encryptMessageInImage(inputImage, message, password);
+					BufferedImage outputImage = EncryptLSB.encodeMsgInImage(inputImage, message, password);
 					ImageIO.write(outputImage, "png", new File(outPath));
 
 					System.out.println("Message hidden. Output saved to: " + outPath);
@@ -141,7 +139,7 @@ public class SteganographyApplication {
 					System.out.println("Type in password: ");
 					String password = scan.nextLine();
 
-					String extracted = EncryptLSB.extractMsgFromImage(inputImage, password);
+					String extracted = EncryptLSB.extractMsgFromImg(inputImage, password);
 					System.out.println("Extracted message: " + extracted);
 				}
 

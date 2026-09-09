@@ -17,24 +17,23 @@ import java.util.Map;
 public class EncryptLSB {
     public EncryptLSB() {}
 
-    public static BufferedImage encryptMessageInImage(BufferedImage image, String message, String password)
+    public static BufferedImage encodeMsgInImage(BufferedImage image, String message, String password)
             throws InvalidAlgorithmParameterException, NoSuchPaddingException,
             IllegalBlockSizeException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException,
             InvalidKeyException {
-        BufferedImage imageCopy = getImageCopy(image);
+        BufferedImage imageCopy = getImgCopy(image);
 
-        validateImageSize(imageCopy);
+        validateImgSize(imageCopy);
 
         // Encrypt message
         String cipherMsg = AESImpl.encryptMessage(message, password);
 
         int cipherLength = cipherMsg.length();
         Pixel[] imagePixels = getPixels(imageCopy);
-        String[] messageBinary = convertMessageToBinary(cipherMsg);
-        String messageBinaryText = convertMessageBinaryArrtoString(messageBinary);
+        String[] messageBinary = convertMsgToBinary(cipherMsg);
+        String messageBinaryText = convertMsgBinaryArrtoString(messageBinary);
         Pixel[] startingPixels = new Pixel[11];
 
-        int index = 0;
         int bitsIndex = 0;
         for (int i = 0; i < imagePixels.length; i++) {
             if (i < 11) {
@@ -57,10 +56,10 @@ public class EncryptLSB {
             }
         }
 
-        return createNewImage(imagePixels, image.getWidth(), image.getHeight());
+        return createNewImg(imagePixels, image.getWidth(), image.getHeight());
     }
 
-    public static String extractMsgFromImage(BufferedImage image, String password) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
+    public static String extractMsgFromImg(BufferedImage image, String password) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
         String cipherText = convertBitsToString(extractMsgBitsFromImg(image));
         String message = AESImpl.decryptMessage(password, cipherText);
 
@@ -167,7 +166,7 @@ public class EncryptLSB {
         return length;
     }
 
-    private static String[] convertMessageToBinary(String message) {
+    private static String[] convertMsgToBinary(String message) {
         String[] binaryValues = new String[message.length()];
 
         for (int i = 0; i < message.length(); i++) {
@@ -180,7 +179,7 @@ public class EncryptLSB {
         return binaryValues;
     }
 
-    private static String convertMessageBinaryArrtoString(String[] messageBinary) {
+    private static String convertMsgBinaryArrtoString(String[] messageBinary) {
         StringBuilder message = new StringBuilder();
 
         for (String binary : messageBinary) {
@@ -207,7 +206,7 @@ public class EncryptLSB {
         return colorsBinary;
     }
 
-    private static BufferedImage getImageCopy(BufferedImage image) {
+    private static BufferedImage getImgCopy(BufferedImage image) {
         ColorModel colorModel = image.getColorModel();
         boolean isAlphaPremultiplied = colorModel.isAlphaPremultiplied();
         WritableRaster writableRaster = image.copyData(image.getRaster().createCompatibleWritableRaster());
@@ -233,7 +232,7 @@ public class EncryptLSB {
         return pixels;
     }
 
-    private static BufferedImage createNewImage(Pixel[] pixels, int width, int height) {
+    private static BufferedImage createNewImg(Pixel[] pixels, int width, int height) {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
         for (Pixel pixel : pixels) {
@@ -247,7 +246,7 @@ public class EncryptLSB {
         return message.length() <= 1024;
     }
 
-    public static boolean validateImageSize(BufferedImage image) {
+    public static boolean validateImgSize(BufferedImage image) {
         // Height should be more than 600 pixels
         // Width should be more than 600 pixels
         return image.getHeight() * image.getWidth() >= 3000;
