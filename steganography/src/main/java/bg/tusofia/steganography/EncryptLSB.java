@@ -72,7 +72,8 @@ public class EncryptLSB {
 
         StringBuilder bd = new StringBuilder();
         bd.append("11111111".repeat(Math.max(0, a)));
-        bd.append(String.format("%8s", Integer.toBinaryString((byte) b & 0xFF)).replace(' ', '0'));
+        bd.append(String.format("%8s", Integer.toBinaryString((byte) b & 0xFF))
+                .replace(' ', '0'));
         bd.append("00000000".repeat(Math.max(0, 4 - a - 1)));
 
         String bits = bd.toString();
@@ -247,8 +248,6 @@ public class EncryptLSB {
     }
 
     public static boolean validateImgSize(BufferedImage image) {
-        // Height should be more than 600 pixels
-        // Width should be more than 600 pixels
         return image.getHeight() * image.getWidth() >= 3000;
     }
 }
